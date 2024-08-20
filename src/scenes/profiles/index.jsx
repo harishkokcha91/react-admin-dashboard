@@ -14,7 +14,7 @@ const ProfilesPage = () => {
 
   const fetchProfiles = async (page, limit) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/profiles`, {
+      const response = await axios.get(`/api/profiles`, {
         params: { page, limit },
         headers: {
           'Content-Type': 'application/json',

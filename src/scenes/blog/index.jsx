@@ -7,8 +7,11 @@ import Header from '../../components/Header';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import { getToken, removeToken } from '../../utils/tokenservice';
+
 
 const BlogList = () => {
+  const token = getToken();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -60,13 +63,14 @@ const BlogList = () => {
   // Function to fetch blog posts
   const fetchBlogs = async (page = 1, limit = 10) => {
     setLoading(true);
+    
     try {
         const response = await axios.get(
-            `api/posts`,
+            `api/posts/`,
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQxMzgzNDYsImlhdCI6MTcyNDEzNzQ0NiwibmJmIjoxNzI0MTM3NDQ2LCJzdWIiOjF9.Ee9wLJkpBYJL-NTtCova8HMOaxBMROK_KBqFk4Dq2zDsTFtB6CbMas9N-F4zAbxLHwUtkrB83-QKHv5IPoyQxg`
+                    Authorization: `Bearer ${token}`
                 },
                 params: { page, limit } // Pass page and limit as query parameters
             }
@@ -88,10 +92,21 @@ const BlogList = () => {
     setOpenModal(true);
   };
 
-  const handleDelete = (id) => {
-    console.log('Delete post with ID:', id);
-    // Implement your delete functionality here
-  };
+  const handleDelete =  async (postId) => {
+      try {
+        await axios.delete(`/api/posts/${postId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        // Refresh blog list after deletion
+        fetchBlogs(); 
+      } catch (error) {
+        console.error('Error deleting post:', error);
+      }
+    };
 
   const handleModalClose = () => {
     setOpenModal(false);
@@ -117,12 +132,12 @@ const BlogList = () => {
         };
 
         await axios.put(
-          `http://localhost:8000/api/posts/${currentBlog.id}`,
+          `/api/posts/${currentBlog.id}`,
           updatedBlog,
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjM4ODUzNTcsImlhdCI6MTcyMzg4NDQ1NywibmJmIjoxNzIzODg0NDU3LCJzdWIiOjMwfQ.VW1__HU5svfNkkicr2xPcmkn0ytpxjR5LUzmxvUcEUpFKtXJBQPz6sdjfE9HiAbQEZtqCda1FCjQ-ScxQYDFng`
+             Authorization: `Bearer ${token}`
             }
           }
         );
@@ -143,12 +158,12 @@ const BlogList = () => {
       };
 
       await axios.post(
-        `http://localhost:8000/api/posts`,
+        `/api/posts`,
         newBlogData,
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjM4ODUzNTcsImlhdCI6MTcyMzg4NDQ1NywibmJmIjoxNzIzODg0NDU3LCJzdWIiOjMwfQ.VW1__HU5svfNkkicr2xPcmkn0ytpxjR5LUzmxvUcEUpFKtXJBQPz6sdjfE9HiAbQEZtqCda1FCjQ-ScxQYDFng`
+            Authorization: `Bearer ${token}`
           }
         }
       );
