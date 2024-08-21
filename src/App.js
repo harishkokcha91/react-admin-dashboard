@@ -4,6 +4,7 @@ import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
+import Events from "./scenes/event";
 import Invoices from "./scenes/invoices";
 import Contacts from "./scenes/contacts";
 import Bar from "./scenes/bar";
@@ -48,6 +49,7 @@ function App() {
               <Route path="/register" element={<RegistrationForm />} />
               <Route path="/userProfileForm" element={<UserProfileForm />} />
               <Route path="/profileList" element={<Profiles />} />
+              <Route path="/events" element={<Events />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/geography" element={<Geography />} />
             </Routes>
